@@ -12,6 +12,7 @@ import 'package:tabbed_view/src/typedefs/can_drop.dart';
 class TabbedViewProvider {
   TabbedViewProvider(
       {required this.controller,
+      this.loadingWidget,
       this.contentBuilder,
       this.onTabClose,
       this.tabCloseInterceptor,
@@ -46,6 +47,7 @@ class TabbedViewProvider {
   final OnDraggableBuild? onDraggableBuild;
   final CanDrop? canDrop;
   final OnBeforeDropAccept? onBeforeDropAccept;
+  final Widget? loadingWidget;
 }
 
 /// Updater for menu items

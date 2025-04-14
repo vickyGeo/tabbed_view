@@ -49,6 +49,7 @@ class TabsAreaButtonsWidget extends StatelessWidget {
           child: TabButtonWidget(
               provider: provider,
               button: tabButton,
+              index: i,
               enabled: provider.draggingTabIndex == null,
               normalColor: tabsAreaTheme.normalButtonColor,
               hoverColor: tabsAreaTheme.hoverButtonColor,
@@ -84,7 +85,8 @@ class TabsAreaButtonsWidget extends StatelessWidget {
   }
 
   /// Builder for hidden tabs menu.
-  List<TabbedViewMenuItem> _hiddenTabsMenuBuilder(BuildContext context) {
+  List<TabbedViewMenuItem> _hiddenTabsMenuBuilder(
+      BuildContext context, int selectedIndex) {
     List<TabbedViewMenuItem> list = [];
     for (int index in hiddenTabs.indexes) {
       TabData tab = provider.controller.tabs[index];

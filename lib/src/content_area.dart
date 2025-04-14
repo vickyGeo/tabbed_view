@@ -47,8 +47,34 @@ class ContentArea extends StatelessWidget {
           }
           children.add(Positioned.fill(
               key: tab.key,
-              child:
-                  Container(child: child, padding: contentAreaTheme.padding)));
+              child: Stack(
+                children: [
+                  // Your main container
+                  Container(child: child, padding: contentAreaTheme.padding),
+
+                  // Loading overlay (only shows if loading)
+                  if (tab.isloading) ...[
+                    // Prevents interaction
+                    IgnorePointer(
+                      ignoring: false,
+                      child:
+                          Container(color: Colors.grey.withValues(alpha: 0.3)),
+                    ),
+                    // Spinner
+                    Positioned.fill(
+                      child: Center(
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                            Text("Loading..."),
+                            if (provider.loadingWidget != null)
+                              provider.loadingWidget!
+                            // RefreshProgressIndicator()
+                          ])),
+                    ),
+                  ],
+                ],
+              )));
         }
       }
 

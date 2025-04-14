@@ -32,15 +32,65 @@ class TabbedViewExamplePageState extends State<TabbedViewExamplePage> {
 
     tabs.add(TabData(
         text: 'Tab 1',
+        isloading: true,
+        buttons: [
+          TabButton(
+              icon: IconProvider.path(TabbedViewIcons.menu),
+              menuBuilder: (context, tabIndex) => [
+                    TabbedViewMenuItem(
+                        text: "Delete left",
+                        onSelection: () {
+                          _controller.sublist(tabIndex);
+                        })
+                  ])
+        ],
         leading: (context, status) => Icon(Icons.star, size: 16),
-        content: Padding(padding: EdgeInsets.all(8), child: Text('Hello'))));
+        content: Padding(
+            padding: EdgeInsets.all(8),
+            child: Column(
+              children: [
+                Text('Hello'),
+                ElevatedButton(
+                    onPressed: () {
+                      print("pressed");
+                    },
+                    child: Text("test"))
+              ],
+            ))));
     tabs.add(TabData(
         text: 'Tab 2',
+        buttons: [
+          TabButton(
+              icon: IconProvider.path(TabbedViewIcons.menu),
+              menuBuilder: (context, tabIndex) {
+                return [
+                  TabbedViewMenuItem(
+                      text: "Delete left",
+                      onSelection: () {
+                        // List<TabData> rightSide = tabs.sublist(1);
+                        _controller.sublist(tabIndex);
+                        // _controller.setTabs(rightSide);
+                        // _controller.selectedIndex = 0;
+                      })
+                ];
+              })
+        ],
         content:
             Padding(padding: EdgeInsets.all(8), child: Text('Hello again'))));
     tabs.add(TabData(
         closable: false,
         text: 'TextField',
+        buttons: [
+          TabButton(
+              icon: IconProvider.path(TabbedViewIcons.menu),
+              menuBuilder: (context, tabIndex) => [
+                    TabbedViewMenuItem(
+                        text: "Delete left",
+                        onSelection: () {
+                          _controller.sublist(tabIndex);
+                        })
+                  ])
+        ],
         content: Padding(
             padding: EdgeInsets.all(8),
             child: TextField(
@@ -53,7 +103,11 @@ class TabbedViewExamplePageState extends State<TabbedViewExamplePage> {
 
   @override
   Widget build(BuildContext context) {
-    TabbedView tabbedView = TabbedView(controller: _controller);
+    TabbedView tabbedView = TabbedView(
+      controller: _controller,
+      loadingWidget: CircularProgressIndicator(),
+      selectToEnableButtons: false,
+    );
     Widget w =
         TabbedViewTheme(data: TabbedViewThemeData.mobile(), child: tabbedView);
     return Scaffold(body: Container(padding: EdgeInsets.all(32), child: w));

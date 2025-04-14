@@ -42,6 +42,7 @@ class TabbedView extends StatefulWidget {
   TabbedView(
       {required this.controller,
       this.contentBuilder,
+      this.loadingWidget,
       this.onTabClose,
       this.tabCloseInterceptor,
       this.onTabSelection,
@@ -56,6 +57,7 @@ class TabbedView extends StatefulWidget {
       this.onBeforeDropAccept});
 
   final TabbedViewController controller;
+  final Widget? loadingWidget;
   final bool contentClip;
   final IndexedWidgetBuilder? contentBuilder;
   final OnTabClose? onTabClose;
@@ -103,6 +105,7 @@ class _TabbedViewState extends State<TabbedView> {
 
     TabbedViewProvider provider = TabbedViewProvider(
         controller: widget.controller,
+        loadingWidget: widget.loadingWidget,
         contentBuilder: widget.contentBuilder,
         onTabClose: widget.onTabClose,
         tabCloseInterceptor: widget.tabCloseInterceptor,

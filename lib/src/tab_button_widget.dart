@@ -14,6 +14,7 @@ class TabButtonWidget extends StatefulWidget {
       required this.normalColor,
       required this.hoverColor,
       required this.disabledColor,
+      required this.index,
       this.themePadding,
       this.normalBackground,
       this.hoverBackground,
@@ -21,6 +22,7 @@ class TabButtonWidget extends StatefulWidget {
 
   final TabbedViewProvider provider;
   final TabButton button;
+  final int index;
   final double iconSize;
   final Color normalColor;
   final Color hoverColor;
@@ -88,7 +90,7 @@ class TabButtonWidgetState extends State<TabButtonWidget> {
       onPressed = () {
         if (widget.provider.menuItems.isEmpty) {
           List<TabbedViewMenuItem> menuItems =
-              widget.button.menuBuilder!(context);
+              widget.button.menuBuilder!(context, widget.index);
           if (menuItems.isNotEmpty) {
             widget.provider.menuItemsUpdater(menuItems);
           }

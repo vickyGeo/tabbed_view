@@ -228,6 +228,7 @@ class TabWidget extends StatelessWidget {
         textAndButtons.add(Container(
             child: TabButtonWidget(
                 provider: provider,
+                index: tab.index,
                 button: button,
                 enabled: buttonsEnabled,
                 normalColor: normalColor,
@@ -256,6 +257,7 @@ class TabWidget extends StatelessWidget {
       textAndButtons.add(Container(
           child: TabButtonWidget(
               provider: provider,
+              index: index,
               button: closeButton,
               enabled: buttonsEnabled,
               normalColor: normalColor,

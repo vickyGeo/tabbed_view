@@ -174,6 +174,41 @@ class TabbedViewController extends ChangeNotifier {
     return tabData;
   }
 
+  /// Removes a tab.
+  sublist(int tabIndex, {bool removeLeft = true}) {
+    _validateIndex(tabIndex);
+    List<TabData> rightSideData = _tabs.sublist(tabIndex);
+    List<TabData> leftSideData = _tabs.sublist(0, tabIndex + 1);
+    if (_tabs.isEmpty) {
+      _selectedIndex = null;
+    } else if (_selectedIndex != null &&
+        (_selectedIndex == tabIndex || _selectedIndex! >= _tabs.length)) {
+      _selectedIndex = 0;
+    }
+    if (removeLeft) {
+      leftSideData.forEach((tabData) {
+        tabData.removeListener(notifyListeners);
+        tabData._setIndex(-1);
+        _updateIndexes(false);
+      });
+      setTabs(rightSideData);
+    } else {
+      rightSideData.forEach((tabData) {
+        tabData.removeListener(notifyListeners);
+        tabData._setIndex(-1);
+        _updateIndexes(false);
+      });
+      setTabs(leftSideData);
+    }
+    if (_tabs.isEmpty) {
+      _selectedIndex = null;
+    } else {
+      _selectedIndex = 0;
+    }
+
+    notifyListeners();
+  }
+
   /// Removes all tabs.
   void removeTabs() {
     for (TabData tab in _tabs) {

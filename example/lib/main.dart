@@ -50,11 +50,7 @@ class TabbedViewExamplePageState extends State<TabbedViewExamplePage> {
             child: Column(
               children: [
                 Text('Hello'),
-                ElevatedButton(
-                    onPressed: () {
-                      print("pressed");
-                    },
-                    child: Text("test"))
+                ElevatedButton(onPressed: () {}, child: Text("test"))
               ],
             ))));
     tabs.add(TabData(

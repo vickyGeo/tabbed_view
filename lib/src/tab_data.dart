@@ -33,6 +33,7 @@ import 'package:tabbed_view/src/tabbed_view_controller.dart';
 class TabData extends ChangeNotifier with TabIndex {
   TabData(
       {bool isloading = false,
+      String? loadingText,
       dynamic value,
       required String text,
       Color? textColor,
@@ -48,6 +49,7 @@ class TabData extends ChangeNotifier with TabIndex {
         _textColor = textColor,
         _isLoading = isloading,
         _leading = leading,
+        _loadingText = loadingText ?? "Loading...",
         _closable = closable,
         _content = content,
         _buttons = buttons,
@@ -59,6 +61,16 @@ class TabData extends ChangeNotifier with TabIndex {
   final bool keepAlive;
 
   final bool draggable;
+  String _loadingText;
+  String get loadingText => _loadingText;
+
+  setLoadingText(String text) {
+    if (_loadingText != text) {
+      _loadingText = text;
+      notifyListeners();
+    }
+  }
+
   Color? _textColor;
   setTextColor(Color color) {
     if (_textColor != color) {

@@ -56,17 +56,19 @@ class ContentArea extends StatelessWidget {
                   if (tab.isloading) ...[
                     // Prevents interaction
                     IgnorePointer(
-                      ignoring: false,
-                      child:
-                          Container(color: Colors.grey.withValues(alpha: 0.3)),
-                    ),
+                        ignoring: false,
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5),
+                          child: Container(
+                              color: Colors.grey.withValues(alpha: 0.3)),
+                        )),
                     // Spinner
                     Positioned.fill(
                       child: Center(
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                            Text("Loading..."),
+                            Text(tab.loadingText),
                             if (provider.loadingWidget != null)
                               provider.loadingWidget!
                             // RefreshProgressIndicator()

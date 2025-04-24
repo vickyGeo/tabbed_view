@@ -25,7 +25,8 @@ class TabDragFeedbackWidget extends StatelessWidget {
     children.add(SizedBox(
         width: tab.textSize,
         child: Text(tab.text,
-            style: tabTheme.textStyle, overflow: TextOverflow.ellipsis)));
+            style: tabTheme.textStyle?.copyWith(color: tab.textColor),
+            overflow: TextOverflow.ellipsis)));
 
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center;
     if (tabTheme.verticalAlignment == VerticalAlignment.top) {

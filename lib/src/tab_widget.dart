@@ -186,12 +186,14 @@ class TabWidget extends StatelessWidget {
             ? statusTheme.disabledButtonBackground
             : tabTheme.disabledButtonBackground;
 
-    TextStyle? textStyle = tabTheme.textStyle;
+    TextStyle? textStyle = tabTheme.textStyle?.copyWith(color: tab.textColor);
+
     if (statusTheme.fontColor != null) {
       if (textStyle != null) {
-        textStyle = textStyle.copyWith(color: statusTheme.fontColor);
+        textStyle =
+            textStyle.copyWith(color: tab.textColor ?? statusTheme.fontColor);
       } else {
-        textStyle = TextStyle(color: statusTheme.fontColor);
+        textStyle = TextStyle(color: tab.textColor ?? statusTheme.fontColor);
       }
     }
 

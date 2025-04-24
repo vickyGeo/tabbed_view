@@ -27,8 +27,10 @@ class TabButtonWidget extends StatefulWidget {
   final Color normalColor;
   final Color hoverColor;
   final Color disabledColor;
+
   final EdgeInsetsGeometry? themePadding;
   final bool enabled;
+
   final BoxDecoration? normalBackground;
   final BoxDecoration? hoverBackground;
   final BoxDecoration? disabledBackground;

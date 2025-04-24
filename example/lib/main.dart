@@ -33,6 +33,7 @@ class TabbedViewExamplePageState extends State<TabbedViewExamplePage> {
     tabs.add(TabData(
         text: 'Tab 1',
         isloading: true,
+        textColor: Colors.amber,
         buttons: [
           TabButton(
               icon: IconProvider.path(TabbedViewIcons.menu),
@@ -55,6 +56,7 @@ class TabbedViewExamplePageState extends State<TabbedViewExamplePage> {
             ))));
     tabs.add(TabData(
         text: 'Tab 2',
+        textColor: Colors.amber,
         buttons: [
           TabButton(
               icon: IconProvider.path(TabbedViewIcons.menu),

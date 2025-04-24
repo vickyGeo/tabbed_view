@@ -72,7 +72,8 @@ class TabData extends ChangeNotifier with TabIndex {
   }
 
   Color? _textColor;
-  setTextColor(Color color) {
+  Color? get textColor => _textColor;
+  set setTextColor(Color color) {
     if (_textColor != color) {
       _textColor = color;
       notifyListeners();

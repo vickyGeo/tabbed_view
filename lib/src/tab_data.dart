@@ -145,6 +145,8 @@ class TabData extends ChangeNotifier with TabIndex {
 
   String get text => !_isLoading ? _text : "Loading...";
 
+  String get initialText => _text;
+
   set text(String value) {
     if (_text != value) {
       _text = value;

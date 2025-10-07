@@ -11,8 +11,7 @@ typedef OnReorder = void Function(int oldIndex, int newIndex);
 typedef OnMaxTabsExceeded = void Function(int maxTabs);
 
 /// NEW: Callback to ask user for confirmation before removal.
-/// The UI must await this and return 'true' to proceed or 'false' to cancel.
-typedef OnTabRemoveRequested = Future<bool> Function(int tabIndex);
+typedef OnTabRemoveRequested = Future<bool> Function(int tabIndex, TabData tabData);
 
 /// The [TabbedView] controller.
 ///
@@ -238,9 +237,14 @@ class TabbedViewController extends ChangeNotifier {
   /// Removes a tab. (Omitted for brevity, no changes needed)
   TabData removeTab(int tabIndex) {
     _validateIndex(tabIndex);
-    // NEW: Check for confirmation before proceeding
+
+    // 1. Get the TabData object before removal
+    TabData tabData = _tabs[tabIndex]; 
+    // Check for confirmation before proceeding
+  
     if (onTabRemoveRequested != null) {
-        bool confirm = await onTabRemoveRequested!(tabIndex);
+       //  Pass both the index and the data to the callback
+       bool confirm = await onTabRemoveRequested!(tabIndex, tabData);
         if (!confirm) {
             return null; // Removal cancelled
         }

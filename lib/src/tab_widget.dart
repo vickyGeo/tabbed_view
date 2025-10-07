@@ -276,12 +276,12 @@ class TabWidget extends StatelessWidget {
     return textAndButtons;
   }
 
-  void _onClose(BuildContext context, int index) {
+  void _onClose(BuildContext context, int index) async {
     if (provider.tabCloseInterceptor == null ||
         provider.tabCloseInterceptor!(index)) {
       onClose();
-      TabData tabData = provider.controller.removeTab(index);
-      if (provider.onTabClose != null) {
+      TabData? tabData = await provider.controller.removeTab(index);
+      if (provider.onTabClose != null && tabData != null) {
         provider.onTabClose!(index, tabData);
       }
     }

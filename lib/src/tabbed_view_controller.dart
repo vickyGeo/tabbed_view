@@ -10,6 +10,10 @@ typedef OnReorder = void Function(int oldIndex, int newIndex);
 // NEW: Event that will be triggered when a tab addition is blocked by the maxTabs limit.
 typedef OnMaxTabsExceeded = void Function(int maxTabs);
 
+/// NEW: Callback to ask user for confirmation before removal.
+/// The UI must await this and return 'true' to proceed or 'false' to cancel.
+typedef OnTabRemoveRequested = Future<bool> Function(int tabIndex);
+
 /// The [TabbedView] controller.
 ///
 /// Stores tabs and selection tab index.
@@ -24,7 +28,8 @@ class TabbedViewController extends ChangeNotifier {
       this.data,
       bool reorderEnable = true,
       int? maxTabs, // Public named parameter
-      this.onMaxTabsExceeded})
+      this.onMaxTabsExceeded,
+      this.onTabRemoveRequested})
       : this._maxTabs = maxTabs, // Assign public parameter to private field
         this._reorderEnable = reorderEnable {
     if (_tabs.isNotEmpty) {
@@ -46,6 +51,7 @@ class TabbedViewController extends ChangeNotifier {
   final OnReorder? onReorder;
 
   final OnMaxTabsExceeded? onMaxTabsExceeded;
+  final OnTabRemoveRequested? onTabRemoveRequested; 
 
   final int? _maxTabs; // Private field
   int? get maxTabs => _maxTabs; // Public getter
@@ -232,6 +238,14 @@ class TabbedViewController extends ChangeNotifier {
   /// Removes a tab. (Omitted for brevity, no changes needed)
   TabData removeTab(int tabIndex) {
     _validateIndex(tabIndex);
+    // NEW: Check for confirmation before proceeding
+    if (onTabRemoveRequested != null) {
+        bool confirm = await onTabRemoveRequested!(tabIndex);
+        if (!confirm) {
+            return null; // Removal cancelled
+        }
+    }
+
     TabData tabData = _tabs.removeAt(tabIndex);
     tabData.removeListener(notifyListeners);
     tabData._setIndex(-1);

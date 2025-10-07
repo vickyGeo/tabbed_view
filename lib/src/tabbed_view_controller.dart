@@ -13,9 +13,13 @@ typedef OnReorder = void Function(int oldIndex, int newIndex);
 /// When a property is changed, the [TabbedView] is notified and updated appropriately.
 ///
 /// Remember to dispose of the [TabbedView] when it is no longer needed. This will ensure we discard any resources used by the object.
+/// The [TabbedView] controller.
 class TabbedViewController extends ChangeNotifier {
   TabbedViewController(this._tabs,
-      {this.onReorder, this.data, bool reorderEnable = true})
+      {this.onReorder,
+      this.data,
+      bool reorderEnable = true,
+      this._maxTabs}) // 1. Added _maxTabs to constructor
       : this._reorderEnable = reorderEnable {
     if (_tabs.isNotEmpty) {
       _selectedIndex = 0;
@@ -43,6 +47,10 @@ class TabbedViewController extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // 1. New property for the maximum number of tabs
+  final int? _maxTabs;
+  int? get maxTabs => _maxTabs;
 
   /// The selected tab index
   int? get selectedIndex => _selectedIndex;
@@ -113,6 +121,11 @@ class TabbedViewController extends ChangeNotifier {
   ///
   /// The [index] value must be non-negative and no greater than [tabs.length].
   void insertTab(int index, TabData tab) {
+    // 2. Limit check for single tab insertion
+    if (_maxTabs != null && _tabs.length >= _maxTabs!) {
+      return; // Do nothing if limit is reached
+    }
+
     _tabs.insert(index, tab);
     tab.addListener(notifyListeners);
     _updateIndexes(false);
@@ -121,6 +134,12 @@ class TabbedViewController extends ChangeNotifier {
 
   /// Replaces all tabs.
   void setTabs(Iterable<TabData> iterable) {
+    // 3. Limit check for replacing all tabs
+    if (_maxTabs != null && iterable.length > _maxTabs!) {
+      // Use only the first maxTabs tabs
+      iterable = iterable.take(_maxTabs!);
+    }
+
     for (TabData tab in _tabs) {
       tab.removeListener(notifyListeners);
     }
@@ -132,8 +151,17 @@ class TabbedViewController extends ChangeNotifier {
 
   /// Adds multiple [TabData].
   void addTabs(Iterable<TabData> iterable) {
-    _tabs.addAll(iterable);
-    for (TabData tab in iterable) {
+    // 4. Limit check for adding multiple tabs
+    int availableSlots = _maxTabs == null ? iterable.length : _maxTabs! - _tabs.length;
+    
+    if (availableSlots <= 0) return; // Limit already reached or exceeded
+
+    Iterable<TabData> tabsToAdd = availableSlots < iterable.length
+        ? iterable.take(availableSlots)
+        : iterable;
+
+    _tabs.addAll(tabsToAdd);
+    for (TabData tab in tabsToAdd) {
       tab.addListener(notifyListeners);
     }
     _updateIndexes(false);
@@ -142,6 +170,11 @@ class TabbedViewController extends ChangeNotifier {
 
   /// Adds a [TabData].
   void addTab(TabData tab) {
+    // 5. Limit check for single tab addition
+    if (_maxTabs != null && _tabs.length >= _maxTabs!) {
+      return; // Do nothing if limit is reached
+    }
+
     _tabs.add(tab);
     tab.addListener(notifyListeners);
     tab._setIndex(_tabs.length - 1);

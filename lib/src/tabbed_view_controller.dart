@@ -20,7 +20,8 @@ class TabbedViewController extends ChangeNotifier {
       this.data,
       bool reorderEnable = true,
       this._maxTabs}) // 1. Added _maxTabs to constructor
-      : this._reorderEnable = reorderEnable {
+      : this._maxTabs = maxTabs, 
+  this._reorderEnable = reorderEnable {
     if (_tabs.isNotEmpty) {
       _selectedIndex = 0;
     }

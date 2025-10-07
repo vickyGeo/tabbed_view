@@ -6,6 +6,10 @@ import 'package:tabbed_view/src/tab_data.dart';
 /// Event that will be triggered when the tab is reorder.
 typedef OnReorder = void Function(int oldIndex, int newIndex);
 
+
+// NEW: Event that will be triggered when a tab addition is blocked by the maxTabs limit.
+typedef OnMaxTabsExceeded = void Function(int maxTabs);
+
 /// The [TabbedView] controller.
 ///
 /// Stores tabs and selection tab index.
@@ -19,7 +23,8 @@ class TabbedViewController extends ChangeNotifier {
       {this.onReorder,
       this.data,
       bool reorderEnable = true,
-      int? maxTabs}) // 1. Added _maxTabs to constructor
+      int? maxTabs,
+      this.onMaxTabsExceeded}) // 1. Added _maxTabs to constructor
       : this._maxTabs = maxTabs, 
   this._reorderEnable = reorderEnable {
     if (_tabs.isNotEmpty) {
@@ -39,6 +44,9 @@ class TabbedViewController extends ChangeNotifier {
   int? _selectedIndex;
 
   final OnReorder? onReorder;
+  
+  // NEW: Callback for when the max tabs limit is reached
+  final OnMaxTabsExceeded? onMaxTabsExceeded; 
 
   bool _reorderEnable;
   bool get reorderEnable => _reorderEnable;
@@ -124,6 +132,7 @@ class TabbedViewController extends ChangeNotifier {
   void insertTab(int index, TabData tab) {
     // 2. Limit check for single tab insertion
     if (_maxTabs != null && _tabs.length >= _maxTabs!) {
+       _triggerMaxTabsExceeded(); // NEW: Call the callback
       return; // Do nothing if limit is reached
     }
 
@@ -139,6 +148,8 @@ class TabbedViewController extends ChangeNotifier {
     if (_maxTabs != null && iterable.length > _maxTabs!) {
       // Use only the first maxTabs tabs
       iterable = iterable.take(_maxTabs!);
+       // If the original length exceeded the max, trigger the callback
+      _triggerMaxTabsExceeded(); 
     }
 
     for (TabData tab in _tabs) {
@@ -155,8 +166,10 @@ class TabbedViewController extends ChangeNotifier {
     // 4. Limit check for adding multiple tabs
     int availableSlots = _maxTabs == null ? iterable.length : _maxTabs! - _tabs.length;
     
-    if (availableSlots <= 0) return; // Limit already reached or exceeded
-
+    if (availableSlots <= 0){
+       _triggerMaxTabsExceeded(); // NEW: Call the callback
+      return; // Limit already reached or exceeded
+    }
     Iterable<TabData> tabsToAdd = availableSlots < iterable.length
         ? iterable.take(availableSlots)
         : iterable;
@@ -173,6 +186,7 @@ class TabbedViewController extends ChangeNotifier {
   void addTab(TabData tab) {
     // 5. Limit check for single tab addition
     if (_maxTabs != null && _tabs.length >= _maxTabs!) {
+      _triggerMaxTabsExceeded(); // NEW: Call the callback
       return; // Do nothing if limit is reached
     }
 
@@ -180,6 +194,13 @@ class TabbedViewController extends ChangeNotifier {
     tab.addListener(notifyListeners);
     tab._setIndex(_tabs.length - 1);
     _afterIncTabs();
+  }
+
+  /// Helper to trigger the max tabs exceeded callback.
+  void _triggerMaxTabsExceeded() {
+    if (onMaxTabsExceeded != null && _maxTabs != null) {
+      onMaxTabsExceeded!(_maxTabs!);
+    }
   }
 
   /// Method that should be used after adding a tab.
